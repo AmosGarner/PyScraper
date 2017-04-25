@@ -27,8 +27,14 @@ def main():
         res = requests.get(googleUrl + generateURLReadyKeywords(arguments.keywords))
         res.raise_for_status()
         searchResultsHTML = bs4.BeautifulSoup(res.text, 'html.parser')
-        results = searchResultsHTML.select('.g')
-        print '%s  returned, here are the top 5!' % (searchResultsHTML.select('#resultStats')[0].text)
+        results = searchResultsHTML.select('.r a')
+
+        if(len(results)  >= 5):
+            results = results[:5]
+
+        print '%s  returned, here are the top %s!' % (searchResultsHTML.select('#resultStats')[0].text, len(results))
+        for result in results:
+            print(result.href)
 
 if __name__ == '__main__':
     main()
