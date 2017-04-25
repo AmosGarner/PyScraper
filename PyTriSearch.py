@@ -5,6 +5,15 @@ googleUrl = 'https://www.google.com/search?q='
 connecter = '&'
 imgSearchFlag = 'tbm=isch'
 
+def generateURLReadyKeywords(keywords):
+    output = ''
+    for character in list(keywords):
+        if character == ',':
+            output += '+'
+        else:
+            output += character
+    return output
+
 def main():
     parser = parser = argparse.ArgumentParser(description="Runs PyTriSearch googling utility.")
     parser.add_argument('--type', dest='search_type', required=False)
@@ -12,9 +21,9 @@ def main():
     arguments = parser.parse_args()
 
     if arguments.search_type == 'image' or arguments.search_type == 'i':
-        browser.open(googleUrl + 'cat' + connecter + imgSearchFlag)
+        browser.open(googleUrl + generateURLReadyKeywords(arguments.keywords) + connecter + imgSearchFlag)
     else:
-        browser.open(googleUrl + 'cat')
+        browser.open(googleUrl + generateURLReadyKeywords(arguments.keywords))
 
 if __name__ == '__main__':
     main()
