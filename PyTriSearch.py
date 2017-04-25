@@ -1,4 +1,4 @@
-import sys, requests, pyperclip, argparse
+import sys, requests, pyperclip, argparse, bs4
 import webbrowser as browser
 
 googleUrl = 'https://www.google.com/search?q='
@@ -24,6 +24,11 @@ def main():
         browser.open(googleUrl + generateURLReadyKeywords(arguments.keywords) + connecter + imgSearchFlag)
     else:
         browser.open(googleUrl + generateURLReadyKeywords(arguments.keywords))
+        res = requests.get(googleUrl + generateURLReadyKeywords(arguments.keywords))
+        res.raise_for_status()
+        searchResultsHTML = bs4.BeautifulSoup(res.text, 'html.parser')
+        results = searchResultsHTML.select('.g')
+        print '%s  returned, here are the top 5!' % (searchResultsHTML.select('#resultStats')[0].text)
 
 if __name__ == '__main__':
     main()
