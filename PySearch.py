@@ -5,6 +5,13 @@ googleUrl = 'https://www.google.com/search?q='
 connecter = '&'
 imgSearchFlag = 'tbm=isch'
 
+def generateArgumentsFromParser():
+    parser = parser = argparse.ArgumentParser(description="Runs PyTriSearch googling utility.")
+    parser.add_argument('--type', dest='search_type', required=False)
+    parser.add_argument('--search', dest='keywords', required=True)
+    parser.add_argument('--total', dest='total_results', required=False)
+    return parser.parse_args()
+
 def generateURLReadyKeywords(keywords):
     output = ''
     for character in list(keywords):
@@ -15,11 +22,7 @@ def generateURLReadyKeywords(keywords):
     return output
 
 def main():
-    parser = parser = argparse.ArgumentParser(description="Runs PyTriSearch googling utility.")
-    parser.add_argument('--type', dest='search_type', required=False)
-    parser.add_argument('--search', dest='keywords', required=True)
-    parser.add_argument('--total', dest='total_results', required=False)
-    arguments = parser.parse_args()
+    arguments = generateArgumentsFromParser()
 
     if arguments.search_type == 'image' or arguments.search_type == 'i':
         browser.open(googleUrl + generateURLReadyKeywords(arguments.keywords) + connecter + imgSearchFlag)
@@ -42,7 +45,8 @@ def main():
             result = result.get('href').split('&sa=')[0].strip('/url?q=')
             resultPrefix = result.split(':')[0]
             if resultPrefix == 'http' or resultPrefix == 'https':
-                browser.open(result)
+                print(result)
+                #browser.open(result)
             else:
                 print('url: Invalid URL pattern!')
 
