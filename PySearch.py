@@ -33,14 +33,18 @@ def main():
         searchResultsHTML = bs4.BeautifulSoup(res.text, 'html.parser')
         results = searchResultsHTML.select('.r a')
 
-        if len(results)  >= arguments.total_results:
+        if len(results) >= arguments.total_results:
             results = results[:arguments.total_results]
-        else if len()
 
 
         print '%s  returned, here are the top %s!' % (searchResultsHTML.select('#resultStats')[0].text, len(results))
         for result in results:
-            browser.open(result.get('href').strip('/url?q='))
+            result = result.get('href').split('&sa=')[0].strip('/url?q=')
+            resultPrefix = result.split(':')[0]
+            if resultPrefix == 'http' or resultPrefix == 'https':
+                browser.open(result)
+            else:
+                print('url: Invalid URL pattern!')
 
 if __name__ == '__main__':
     main()
