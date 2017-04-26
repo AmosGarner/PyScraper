@@ -39,19 +39,17 @@ def main():
         if arguments.total_results is None:
             arguments.total_results = CONST_NUM_RESULTS
 
-        #browser.open(googleUrl + generateURLReadyKeywords(arguments.keywords))
+        browser.open(googleUrl + generateURLReadyKeywords(arguments.keywords))
         results = getRawSearchResults(arguments.keywords)
 
         if len(results) >= int(arguments.total_results):
-            results = results.split(results, arguments.total_results)
+            results = results[:int(arguments.total_results)]
 
-        print(results[0])
         for result in results:
             result = result.get('href').split('&sa=')[0].strip('/url?q=')
             resultPrefix = result.split(':')[0]
             if resultPrefix == 'http' or resultPrefix == 'https':
-                print(result)
-                #browser.open(result)
+                browser.open(result)
             else:
                 print('url: Invalid URL pattern!')
 
