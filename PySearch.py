@@ -4,6 +4,15 @@ import webbrowser as browser
 googleUrl = 'https://www.google.com/search?q='
 connecter = '&'
 imgSearchFlag = 'tbm=isch'
+CONST_NUM_RESULTS = 5
+
+def getRawSearchResults(keywords):
+    res = requests.get(googleUrl + generateURLReadyKeywords(keywords))
+    res.raise_for_status()
+    searchResultsHTML = bs4.BeautifulSoup(res.text, 'html.parser')
+    results = searchResultsHTML.select('.r a')
+    print '%s  returned, here are the top %s!' % (searchResultsHTML.select('#resultStats')[0].text, len(results))
+    return results
 
 def generateArgumentsFromParser():
     parser = parser = argparse.ArgumentParser(description="Runs PyTriSearch googling utility.")
@@ -28,19 +37,15 @@ def main():
         browser.open(googleUrl + generateURLReadyKeywords(arguments.keywords) + connecter + imgSearchFlag)
     else:
         if arguments.total_results is None:
-            arguments.total_results = 5
+            arguments.total_results = CONST_NUM_RESULTS
 
-        browser.open(googleUrl + generateURLReadyKeywords(arguments.keywords))
-        res = requests.get(googleUrl + generateURLReadyKeywords(arguments.keywords))
-        res.raise_for_status()
-        searchResultsHTML = bs4.BeautifulSoup(res.text, 'html.parser')
-        results = searchResultsHTML.select('.r a')
+        #browser.open(googleUrl + generateURLReadyKeywords(arguments.keywords))
+        results = getRawSearchResults(arguments.keywords)
 
-        if len(results) >= arguments.total_results:
-            results = results[:arguments.total_results]
+        if len(results) >= int(arguments.total_results):
+            results = results.split(results, arguments.total_results)
 
-
-        print '%s  returned, here are the top %s!' % (searchResultsHTML.select('#resultStats')[0].text, len(results))
+        print(results[0])
         for result in results:
             result = result.get('href').split('&sa=')[0].strip('/url?q=')
             resultPrefix = result.split(':')[0]
