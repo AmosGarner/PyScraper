@@ -6,12 +6,14 @@ connecter = '&'
 imgSearchFlag = 'tbm=isch'
 CONST_NUM_RESULTS = 5
 
+def cleanResult(result):
+    return result.get('href').split('&sa=')[0].strip('/url?q=')
+
 def getRawSearchResults(keywords):
     res = requests.get(googleUrl + generateURLReadyKeywords(keywords))
     res.raise_for_status()
     searchResultsHTML = bs4.BeautifulSoup(res.text, 'html.parser')
     results = searchResultsHTML.select('.r a')
-    print '%s  returned, here are the top %s!' % (searchResultsHTML.select('#resultStats')[0].text, len(results))
     return results
 
 def generateArgumentsFromParser():
@@ -46,9 +48,9 @@ def main():
             results = results[:int(arguments.total_results)]
 
         for result in results:
-            result = result.get('href').split('&sa=')[0].strip('/url?q=')
-            resultPrefix = result.split(':')[0]
-            if resultPrefix == 'http' or resultPrefix == 'https':
+            result = cleanResult(result)
+            scheme = result.split(':')[0]
+            if scheme == 'http' or scheme == 'https':
                 browser.open(result)
             else:
                 print('url: Invalid URL pattern!')
