@@ -5,7 +5,6 @@ Web scraper utilities built with python.
 * Name: PyScraper
 * Version: 0.2
 * Author: Amos Garner
-* License: MIT
 
 ## Install Commands:
 Clone project repository into project directory:
